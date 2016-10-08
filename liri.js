@@ -22,9 +22,7 @@ var run = function(input) {
 			break;
 
 		case "do-what-it-says":
-			fs.readFile("./random.txt", function read(error, response){
-				console.log(response);
-			})
+			doIt();
 			break;
 	}
 }
@@ -44,13 +42,13 @@ function twitter() {
 
 }
 
-function spotify() {
-	var userSong = process.argv[3];
-	if (userSong == undefined) {
-		userSong = "The Sign";
+function spotify(input) {
+	var input = process.argv[3];
+	if (input == undefined) {
+		input = "The Sign";
 	}
 
-	spot.search({ type: "track", query: userSong }, function(error, response) {
+	spot.search({ type: "track", query: input }, function(error, response) {
 		if (error) {
 			console.log("Error has occurred " + error);
 			return;
@@ -66,12 +64,12 @@ function spotify() {
 
 }
 
-function omdb() {
-	var userMovie = process.argv[3];
-	if (userMovie == undefined) {
-		userMovie = "mr nobody";
+function omdb(input) {
+	var input = process.argv[3];
+	if (input == undefined) {
+		input = "mr nobody";
 	}
-	request("http://www.omdbapi.com/?t=" + userMovie + "&tomatoes=true", function(error, response, body) {
+	request("http://www.omdbapi.com/?t=" + input + "&tomatoes=true", function(error, response, body) {
 		var mov = JSON.parse(body);
 		if (!error && response.statusCode == 200) {
 			console.log("\n___________________________");
@@ -86,8 +84,15 @@ function omdb() {
 			console.log("Rotton Tomatoes URL: " + mov.tomatoURL);
 		}
 	})
+}
 
-
+function doIt(){
+	fs.readFile("./random.txt", "utf8", function read(error, response){
+		var command = response.split(",")
+		console.log(command[0]);
+		console.log(command[1]);
+		run(command[0]);
+	});
 }
 
 run(input);
